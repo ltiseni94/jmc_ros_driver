@@ -9,10 +9,11 @@ import numpy as np
 import JMC_driver as jmc
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Float32
+from connection_params import avatar_IP_Config
 
 ######### DEFINE "GLOBAL" VARIABLES AND PARAMETERS #########
 
-driver = jmc.JMC_driver()
+driver = jmc.JMC_driver(IP_config=avatar_IP_Config)
 print(driver)
 enable = 0
 

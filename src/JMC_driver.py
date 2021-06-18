@@ -86,5 +86,5 @@ class JMC_driver:
         print('\n')
 
     def logging(self):
-        rospy.loginfo(f'mode: {self.receive_control_mode}\t angle: {self.receive_position}')
+        rospy.loginfo('mode: {name}\t angle: {position}'.format(name=self.receive_control_mode, position=self.receive_position))
 
