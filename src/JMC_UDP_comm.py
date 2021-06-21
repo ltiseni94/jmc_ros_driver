@@ -8,7 +8,7 @@ import socket
 import numpy as np
 import JMC_driver as jmc
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Float32
+from std_msgs.msg import Float64
 from connection_params import avatar_IP_Config
 
 ######### DEFINE "GLOBAL" VARIABLES AND PARAMETERS #########
@@ -24,7 +24,7 @@ def callback(data):
     
     
 def callback1(pos):
-    driver.set_desired_position(pos.data)
+    driver.set_desired_position(180.0*pos.data)
 
 ######### ROS NODE, SUBSCRIBERS AND PUBLISHERS INITIALIZATION #########
 
@@ -32,7 +32,7 @@ def callback1(pos):
 rospy.init_node('Data_exchange', anonymous=True)
 # ros subscribe to topics
 rospy.Subscriber("joy", Joy, callback)
-rospy.Subscriber("des_position", Float32, callback1)
+rospy.Subscriber("head_yaw", Float64, callback1)
 # ros set rate
 r = rospy.Rate(100)
 

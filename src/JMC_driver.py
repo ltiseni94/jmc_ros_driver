@@ -50,7 +50,7 @@ class JMC_driver:
         
         
     def set_desired_position(self, dp):
-        self.send_position = np.single(dp)
+        self.send_position = np.float32(dp)
         
         
     def set_axis(self, x):
