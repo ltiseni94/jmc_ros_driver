@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2.7
 # coding: utf-8
 
 ######### IMPORT LIBRARIES #########
@@ -25,6 +25,9 @@ def callback(data):
     
 def callback1(pos):
     driver.set_desired_position(180.0*pos.data)
+    
+def callback2(k):
+    driver.set_gain(k.data)
 
 ######### ROS NODE, SUBSCRIBERS AND PUBLISHERS INITIALIZATION #########
 
@@ -33,6 +36,7 @@ rospy.init_node('Data_exchange', anonymous=True)
 # ros subscribe to topics
 rospy.Subscriber("joy", Joy, callback)
 rospy.Subscriber("head_yaw", Float64, callback1)
+rospy.Subscriber("set_gain", Float64, callback2)
 # ros set rate
 r = rospy.Rate(100)
 

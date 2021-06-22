@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2.7
 # coding: utf-8
 
 import numpy as np
@@ -16,13 +16,16 @@ class JMC_driver:
         
         # user specified attributes
         
+        self.buffer_length = 9
         self.button = np.uint8(0)
         self.send_position = np.float32(0.0)
+        self.send_gain = np.float32(0.0)
         
         # echo attributes
         
         self.receive_control_mode = np.uint8(0)
         self.receive_position = np.float32(0.0)
+        self.receive_gain = np.float32(0.0)
         
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((self.personal_IP, self.personal_port))
@@ -34,27 +37,15 @@ class JMC_driver:
         
     def __repr__(self):
         print('smc_driver(' + str(self.micro_IP) + ',' + str(self.micro_port) + ')\n')
-        
-        
-    def print_attributes(self):
-        print('Desired attributes:\n')
-        print('Position:'+ str(self.send_position) + '\n')
-        
-        print('\n')
-        
-        print('Current attributes:\n')
-        print('Control mode:'+ str(self.receive_control_mode) + '\n')
-        print('Position:'+ str(self.receive_position) + '\n')
-        
-        print('\n')
+
         
         
     def set_desired_position(self, dp):
         self.send_position = np.float32(dp)
         
         
-    def set_axis(self, x):
-        self.send_axis = np.single(x)
+    def set_gain(self, k):
+        self.send_gain = np.float32(k)
         
         
     def set_buttons(self, button):
@@ -65,17 +56,19 @@ class JMC_driver:
         
         control_mode_button_bytes = self.button.tobytes()
         position_bytes = self.send_position.tobytes()
+        gain_bytes = self.send_gain.tobytes()
         
-        output_bytes = control_mode_button_bytes + position_bytes
+        output_bytes = control_mode_button_bytes + position_bytes + gain_bytes
 
         self.sock.sendto(output_bytes, (self.micro_IP, self.micro_port))
         
         
     def receive_from_driver(self):
         
-        data, _ = self.sock.recvfrom(5)
+        data, _ = self.sock.recvfrom(self.buffer_length)
         self.receive_control_mode = np.frombuffer(data, dtype=np.uint8, count = 1, offset = 0)
         self.receive_position = np.frombuffer(data, dtype=np.float32, count = 1, offset = 1)
+        self.receive_gain = np.frombuffer(data, dtype=np.float32, count = 1, offset = 5)
         
         
     def driver_echo(self):
@@ -86,5 +79,5 @@ class JMC_driver:
         print('\n')
 
     def logging(self):
-        rospy.loginfo('mode: {name}\t angle: {position}'.format(name=self.receive_control_mode, position=self.receive_position))
+        rospy.loginfo('mode: {name}\t angle: {position}\t gain: {gain}'.format(name=self.receive_control_mode, position=self.receive_position, gain=self.receive_gain))
 
