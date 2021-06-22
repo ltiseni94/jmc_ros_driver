@@ -7,7 +7,7 @@ import rospy
 
 class JMC_driver:
 
-    def __init__(self, IP_config=("192.168.0.10",9999,"192.168.0.100",11111)):
+    def __init__(self, IP_config=("192.168.0.10",9999,"192.168.0.100",11111), gain=4.0):
     
         self.micro_IP = IP_config[0]
         self.micro_port = IP_config[1]
@@ -19,7 +19,7 @@ class JMC_driver:
         self.buffer_length = 9
         self.change_mode = np.uint8(0)
         self.send_position = np.float32(0.0)
-        self.send_gain = np.float32(0.0)
+        self.send_gain = np.float32(gain)
         
         # echo attributes
         

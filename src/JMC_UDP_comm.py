@@ -29,7 +29,7 @@ def gain_callback(k):
     driver.set_gain(k.data)
     
 def mode_callback(enable):
-    driver.set_enable(enable.data)
+    driver.set_mode(enable.data)
 
 ######### ROS NODE, SUBSCRIBERS AND PUBLISHERS INITIALIZATION #########
 
