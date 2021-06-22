@@ -8,7 +8,7 @@ import socket
 import numpy as np
 import JMC_driver as jmc
 from sensor_msgs.msg import Joy
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Bool
 from connection_params import avatar_IP_Config
 
 ######### DEFINE "GLOBAL" VARIABLES AND PARAMETERS #########
@@ -19,24 +19,27 @@ enable = 0
 
 ######### SUBSCRIBER CALLBACKS #########
 
-def callback(data):
+def joystick_callback(data):
     driver.set_buttons(data.buttons[5])
     
-    
-def callback1(pos):
+def position_callback(pos):
     driver.set_desired_position(180.0*pos.data)
     
-def callback2(k):
+def gain_callback(k):
     driver.set_gain(k.data)
+    
+def mode_callback(enable):
+    driver.set_enable(enable.data)
 
 ######### ROS NODE, SUBSCRIBERS AND PUBLISHERS INITIALIZATION #########
 
 # ros init
 rospy.init_node('Data_exchange', anonymous=True)
 # ros subscribe to topics
-rospy.Subscriber("joy", Joy, callback)
-rospy.Subscriber("head_yaw", Float64, callback1)
-rospy.Subscriber("set_gain", Float64, callback2)
+rospy.Subscriber("joy", Joy, joystick_callback)
+rospy.Subscriber("head_yaw", Float64, position_callback)
+rospy.Subscriber("set_gain", Float64, gain_callback)
+rospy.Subscriber("set_mode", Bool, mode_callback)
 # ros set rate
 r = rospy.Rate(100)
 

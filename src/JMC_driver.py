@@ -17,7 +17,7 @@ class JMC_driver:
         # user specified attributes
         
         self.buffer_length = 9
-        self.button = np.uint8(0)
+        self.change_mode = np.uint8(0)
         self.send_position = np.float32(0.0)
         self.send_gain = np.float32(0.0)
         
@@ -38,7 +38,10 @@ class JMC_driver:
     def __repr__(self):
         print('smc_driver(' + str(self.micro_IP) + ',' + str(self.micro_port) + ')\n')
 
-        
+
+    def set_buttons(self, button):
+        self.change_mode = np.uint8(button)
+
         
     def set_desired_position(self, dp):
         self.send_position = np.float32(dp)
@@ -47,14 +50,17 @@ class JMC_driver:
     def set_gain(self, k):
         self.send_gain = np.float32(k)
         
-        
-    def set_buttons(self, button):
-        self.button = np.uint8(button)
+    
+    def set_mode(self, mode):
+        if self.receive_control_mode != mode:
+            self.change_mode = np.uint8(1)
+            
         
         
     def send_to_driver(self):
         
-        control_mode_button_bytes = self.button.tobytes()
+        control_mode_button_bytes = self.change_mode.tobytes()
+        self.change_mode = np.uint8(0)
         position_bytes = self.send_position.tobytes()
         gain_bytes = self.send_gain.tobytes()
         
